@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SearchBox from "./SearchBox";
 import axios from "axios";
 
 class App extends Component {
@@ -29,7 +30,7 @@ componentDidMount() {
   this.refreshList();
 }
 
-handleSubmit = (item) => {
+handleSubmit(item) {
     this.toggle();
 
     if (item.id) {
@@ -43,14 +44,26 @@ handleSubmit = (item) => {
       .then((res) => this.refreshList());
 };
 
-handleDelete = (item) => {
+handleDelete(item) {
     axios
       .delete(`/api/customers/${item.id}/`)
       .then((res) => this.refreshList());
 };
 
 renderItems = () => {
-    const newItems = this.state.customerList;
+    var newItems = this.state.customerList;
+
+    const { search } = window.location;
+    const query = new URLSearchParams(search).get('s').toLowerCase();
+    if (query) newItems = newItems.filter(i => 
+      i.first_name.toLowerCase().includes(query) ||
+      i.last_name.toLowerCase().includes(query) ||
+      i.phone.toString().toLowerCase().includes(query) ||
+      i.tr_id.toString().toLowerCase().includes(query) ||
+      i.city.toLowerCase().includes(query) ||
+      i.district.toString().toLowerCase().includes(query)
+    );
+
     newItems.sort((a, b) => b.id - a.id)
   
     return newItems.map((item) => (
@@ -61,7 +74,7 @@ renderItems = () => {
         </div>
         <div>
           <button className="btn btn-secondary">Edit</button>&emsp;
-          <button className="btn btn-danger" onClick={() => this.handleDelete(item)}>Delete</button>
+          <button className="btn btn-danger" onClick={this.handleDelete(item)}>Delete</button>
         </div>
       </li>
     ));
@@ -71,7 +84,8 @@ render() {
   return (
     <main className="container">
       <br></br>
-      <h1>Customer View</h1> Search&emsp;<input type="text"></input>
+        <h1>Customer View</h1>
+        <SearchBox />
       <br></br><br></br>
 
       <ul className="list-group list-group-flush border-top-0">
