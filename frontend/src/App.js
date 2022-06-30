@@ -51,13 +51,18 @@ handleDelete = (item) => {
 
 renderItems = () => {
     const newItems = this.state.customerList;
-
+    newItems.sort((a, b) => b.id - a.id)
+  
     return newItems.map((item) => (
       <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-          {item.first_name} {item.last_name} | TR🆔 {item.tr_id} | 📞 {item.phone} | 📍 {item.city}, {item.district}
-      <button className="btn btn-secondary">Edit</button>&emsp;
-      <button className="btn btn-danger" onClick={() => this.handleDelete(item)}>Delete</button>
-      <b>{item.id}</b>
+        <div>
+          <div><b>{item.id}</b></div>&emsp;
+          {item.first_name} {item.last_name} | 🆔 {item.tr_id} | 📞 {item.phone} | 📍 {item.city}, {item.district}
+        </div>
+        <div>
+          <button className="btn btn-secondary">Edit</button>&emsp;
+          <button className="btn btn-danger" onClick={() => this.handleDelete(item)}>Delete</button>
+        </div>
       </li>
     ));
 };
@@ -66,8 +71,8 @@ render() {
   return (
     <main className="container">
       <br></br>
-      <h1>Customer View</h1>
-      <br></br>
+      <h1>Customer View</h1> Search&emsp;<input type="text"></input>
+      <br></br><br></br>
 
       <ul className="list-group list-group-flush border-top-0">
         {this.renderItems()}
