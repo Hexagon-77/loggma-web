@@ -122,8 +122,8 @@ renderItems = () => {
           {item.first_name} {item.last_name} <b>|</b> 🆔 {item.tr_id} <b>|</b> 📞 {item.phone} <b>|</b> 📍 {item.city}, {item.district}
         </div>
         <div>
-          <button className="btn btn-secondary">Edit</button>&emsp;
-          <button className="btn btn-danger" onClick={() => this.handleDelete(item)}>Delete</button>
+          <button className="btn btn-secondary" title="Edit customer">Edit</button>&emsp;
+          <button className="btn btn-danger" title="Delete customer" onClick={() => this.handleDelete(item)}>Delete</button>
         </div>
       </li>
     ));
@@ -142,10 +142,11 @@ render() {
       </ul>
 
       <br></br><br></br>
-        <button className="btn btn-primary" onClick={() => this.changePage(-1)}>⬅</button>&emsp;
-        <button className="btn btn-primary" onClick={() => this.changePage(1)}>➡</button>&emsp;
+        <button className="btn btn-primary" title="Previous page" onClick={() => this.changePage(-1)}>⬅</button>&emsp;
+        <button className="btn btn-primary" title="Next page" onClick={() => this.changePage(1)}>➡</button>&emsp;
         Page <b>{this.state.pageVal}</b>&emsp;
-        <button className="btn btn-primary" onClick={() => this.changePage(0)}>⌂</button>
+        <button className="btn btn-primary" title="Home" onClick={() => this.changePage(0)}>▲</button>&emsp;
+        <button className="btn btn-secondary" title="Add customer">Add</button>
       <br></br><br></br>
     </main>
   ); }
