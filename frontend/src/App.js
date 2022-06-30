@@ -16,6 +16,7 @@ constructor(props) {
       city: "",
       district: 0,
     },
+    pageVal: 1,
   };
 }
 
@@ -51,26 +52,34 @@ handleDelete(item) {
 };
 
 renderItems = () => {
+    const { search } = window.location;
+    var query = new URLSearchParams(search).get('s');
+    var page = new URLSearchParams(search).get('p');
+    if (page) this.state.pageVal = parseInt(page) + 1;
+
     var newItems = this.state.customerList;
 
-    const { search } = window.location;
-    const query = new URLSearchParams(search).get('s').toLowerCase();
-    if (query) newItems = newItems.filter(i => 
-      i.first_name.toLowerCase().includes(query) ||
-      i.last_name.toLowerCase().includes(query) ||
-      i.phone.toString().toLowerCase().includes(query) ||
-      i.tr_id.toString().toLowerCase().includes(query) ||
-      i.city.toLowerCase().includes(query) ||
-      i.district.toString().toLowerCase().includes(query)
-    );
+    if (query != null) {
+      query = query.toLowerCase();
+
+      newItems = newItems.filter(i => 
+        i.first_name.toLowerCase().includes(query) ||
+        i.last_name.toLowerCase().includes(query) ||
+        i.phone.toString().toLowerCase().includes(query) ||
+        i.tr_id.toString().toLowerCase().includes(query) ||
+        i.city.toLowerCase().includes(query) ||
+        i.district.toString().toLowerCase().includes(query)
+      );
+    }
 
     newItems.sort((a, b) => b.id - a.id)
-  
+    newItems = newItems.slice(5 * page, 5 * page + 5);
+
     return newItems.map((item) => (
       <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
         <div>
           <div><b>{item.id}</b></div>&emsp;
-          {item.first_name} {item.last_name} | 🆔 {item.tr_id} | 📞 {item.phone} | 📍 {item.city}, {item.district}
+          {item.first_name} {item.last_name} <b>|</b> 🆔 {item.tr_id} <b>|</b> 📞 {item.phone} <b>|</b> 📍 {item.city}, {item.district}
         </div>
         <div>
           <button className="btn btn-secondary">Edit</button>&emsp;
@@ -91,6 +100,10 @@ render() {
       <ul className="list-group list-group-flush border-top-0">
         {this.renderItems()}
       </ul>
+
+      <br></br><br></br>
+      <button className="btn btn-primary">⬅</button>&emsp;<button className="btn btn-primary">➡</button>&emsp;Page {this.state.pageVal}
+      <br></br><br></br>
     </main>
   ); }
 }
