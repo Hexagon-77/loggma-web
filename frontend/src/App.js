@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SearchBox from "./SearchBox";
+import Modal from "./Modal";
 import axios from "axios";
 
 class App extends Component {
@@ -16,6 +17,8 @@ constructor(props) {
       city: "",
       district: 0,
     },
+    modal: false,
+    activeItem: 0,
     pageVal: 1,
     searchFilter: "",
     lastPage: false,
@@ -65,12 +68,22 @@ handleSubmit = (item) => {
 };
 
 handleDelete = (item) => {
-    alert("delete " + item.id);
-    
-    axios
-      .delete("/api/customers/", item)
-      .then((res) => this.refreshList());
+    if (window.confirm("Are you sure you want to delete customer #" + item.id + "?")) {
+      axios
+        .delete("/api/customers/", item)
+        .then((res) => this.refreshList());
+    }
 };
+
+handleEdit = (item) => {
+  this.state.activeItem = item;
+
+  this.setState({modal: !this.state.modal});
+}
+
+handleCancel = () => {
+  this.setState({modal: false});
+}
 
 changePage = (i) => {
   if (this.state.lastPage && i > 0) return;
@@ -95,6 +108,7 @@ renderItems = () => {
     var newItems = this.state.customerList;
     this.state.searchFilter = query;
 
+    // Search filter
     if (query != null) {
       query = query.toLowerCase();
 
@@ -108,8 +122,10 @@ renderItems = () => {
       );
     }
 
+    // Sorting
     newItems.sort((a, b) => b.id - a.id)
 
+    // Pagination
     const pagination = 25;
     var sliced = newItems.slice(pagination * page, pagination * page + pagination);
     if (sliced.includes(newItems[newItems.length - 1])) this.state.lastPage = true;
@@ -122,7 +138,7 @@ renderItems = () => {
           {item.first_name} {item.last_name} <b>|</b> 🆔 {item.tr_id} <b>|</b> 📞 {item.phone} <b>|</b> 📍 {item.city}, {item.district}
         </div>
         <div>
-          <button className="btn btn-secondary" title="Edit customer">Edit</button>&emsp;
+          <button className="btn btn-secondary" title="Edit customer" onClick={() => this.handleEdit(item)}>Edit</button>&emsp;
           <button className="btn btn-danger" title="Delete customer" onClick={() => this.handleDelete(item)}>Delete</button>
         </div>
       </li>
@@ -134,7 +150,7 @@ render() {
     <main className="container">
       <br></br>
         <h1>Customer View</h1>
-        <SearchBox />
+        <SearchBox/>
       <br></br><br></br>
 
       <ul className="list-group list-group-flush border-top-0">
@@ -148,6 +164,14 @@ render() {
         <button className="btn btn-primary" title="Home" onClick={() => this.changePage(0)}>▲</button>&emsp;
         <button className="btn btn-secondary" title="Add customer">Add</button>
       <br></br><br></br>
+
+      {this.state.modal ? (
+          <Modal
+            activeItem={this.state.activeItem}
+            toggle={this.toggle}
+            onSave={this.handleSubmit}
+          />
+        ) : null}
     </main>
   ); }
 }

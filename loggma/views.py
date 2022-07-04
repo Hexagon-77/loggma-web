@@ -16,6 +16,7 @@ def customer_list(request):
     """
         List all customers, or create a new customer.
     """
+    print("S+R=7")
 
     if request.method == 'GET':
         customers = Customer.objects.all()
@@ -35,6 +36,7 @@ def customer_detail(request, pk):
     """
         Retrieve, update or delete a customer.
     """
+    print("S+R=19")
 
     try:
         customer = Customer.objects.get(pk = pk)
