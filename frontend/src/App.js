@@ -53,8 +53,6 @@ componentDidMount() {
 }
 
 handleSubmit = (item) => {
-    this.toggle();
-
     if (item.id) {
       axios
         .put(`/api/customers/${item.id}/`, item)
@@ -70,7 +68,7 @@ handleSubmit = (item) => {
 handleDelete = (item) => {
     if (window.confirm("Are you sure you want to delete customer #" + item.id + "?")) {
       axios
-        .delete("/api/customers/", item)
+        .delete(`/api/customers/${item.id}/`)
         .then((res) => this.refreshList());
     }
 };
@@ -169,6 +167,7 @@ render() {
           <Modal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
+            onExit={this.setState({modal: false})}
             onSave={this.handleSubmit}
           />
         ) : null}

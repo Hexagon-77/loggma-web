@@ -9,6 +9,6 @@ router.register(r'customers', views.CustomerView, 'customer')
 urlpatterns = [
     path('loggma/', include('loggma.urls')),
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path('api/', include('loggma.urls')),
     path('', admin.site.urls),
 ]

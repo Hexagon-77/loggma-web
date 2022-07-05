@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
@@ -29,6 +29,7 @@ export default class CustomModal extends Component {
 
   render() {
     const { onSave } = this.props;
+    const { onExit } = null;
 
     return (
       <Modal isOpen={true}>
@@ -104,7 +105,7 @@ export default class CustomModal extends Component {
           </Form>
         </ModalBody>
         <ModalFooter>
-            <button className="btn btn-danger" title="Discard changes" onClick={() => this.handleCancel()}>Cancel</button>
+            <button className="btn btn-danger" title="Discard changes" onClick={() => onExit()}>Cancel</button>
             <button className="btn btn-primary" title="Save changes" onClick={() => onSave(this.state.activeItem)}>Save</button>
         </ModalFooter>
       </Modal>
