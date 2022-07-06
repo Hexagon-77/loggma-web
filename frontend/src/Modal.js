@@ -20,50 +20,49 @@ export default class CustomModal extends Component {
   }
 
   handleChange = (e) => {
-    let { name, value } = e.target;
+    let name = e.target.name;
+    let value = e.target.value;
 
-    const activeItem = { ...this.state.activeItem, [name]: value };
-
-    this.setState({ activeItem });
+    this.setState({activeItem: { ...this.state.activeItem, [name]: value }});
   };
 
   render() {
-    const { onSave } = this.props;
-    const { onExit } = null;
+    var { onSave } = this.props;
+    var { onExit } = this.props;
 
     return (
-      <Modal isOpen={true}>
+      <Modal isOpen = {true}>
         <ModalHeader>Customer</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
-              <Label for="first-name">First name</Label>
+              <Label for="first_name">First name</Label>
               <Input
                 type="text"
-                id="first-name"
-                name="title"
+                id="first_name"
+                name="first_name"
                 value={this.state.activeItem.first_name}
                 onChange={this.handleChange}
                 placeholder="Enter first name"
               />
             </FormGroup>
             <FormGroup>
-              <Label for="last-name">Last name</Label>
+              <Label for="last_name">Last name</Label>
               <Input
                 type="text"
-                id="last-name"
-                name="description"
+                id="last_name"
+                name="last_name"
                 value={this.state.activeItem.last_name}
                 onChange={this.handleChange}
                 placeholder="Enter last name"
               />
             </FormGroup>
             <FormGroup>
-              <Label for="tr-id">Turkish ID number</Label>
+              <Label for="tr_id">Turkish ID number</Label>
               <Input
-                type="text"
-                id="tr-id"
-                name="description"
+                type="number"
+                id="tr_id"
+                name="tr_id"
                 value={this.state.activeItem.tr_id}
                 onChange={this.handleChange}
                 placeholder="Enter turkish ID"
@@ -72,9 +71,9 @@ export default class CustomModal extends Component {
             <FormGroup>
               <Label for="phone">Phone number</Label>
               <Input
-                type="text"
+                type="number"
                 id="phone"
-                name="description"
+                name="phone"
                 value={this.state.activeItem.phone}
                 onChange={this.handleChange}
                 placeholder="Enter phone number"
@@ -85,7 +84,7 @@ export default class CustomModal extends Component {
               <Input
                 type="text"
                 id="city"
-                name="description"
+                name="city"
                 value={this.state.activeItem.city}
                 onChange={this.handleChange}
                 placeholder="Enter city"
@@ -94,9 +93,9 @@ export default class CustomModal extends Component {
             <FormGroup>
               <Label for="district">District</Label>
               <Input
-                type="text"
+                type="number"
                 id="district"
-                name="description"
+                name="district"
                 value={this.state.activeItem.district}
                 onChange={this.handleChange}
                 placeholder="Enter district"

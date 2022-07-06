@@ -53,17 +53,18 @@ componentDidMount() {
 }
 
 handleSubmit = (item) => {
-    if (item.id) {
+    if (this.state.customerList.some(e => e.id === item.id)) {
       axios
-        .put(`/api/customers/${item.id}/`, item)
+        .put("/api/customers/", item)
         .then((res) => this.refreshList());
-      return;
+    } else {
+      axios
+        .post("/api/customers/", item)
+        .then((res) => this.refreshList());
     }
-
-    axios
-      .post("/api/customers/", item)
-      .then((res) => this.refreshList());
-};
+    
+    this.setState({modal: false});
+};  
 
 handleDelete = (item) => {
     if (window.confirm("Are you sure you want to delete customer #" + item.id + "?")) {
@@ -77,6 +78,16 @@ handleEdit = (item) => {
   this.state.activeItem = item;
 
   this.setState({modal: !this.state.modal});
+}
+
+handleAdd = () => {
+  var nid = this.state.customerList.length;
+  while (this.state.customerList.some(e => e.id === nid))
+    nid++;
+
+  const item = { id: nid, first_name: null, last_name: null, tr_id: null, phone: null, city: null, district: null};
+
+  this.setState({activeItem: item, modal: !this.state.modal});
 }
 
 handleCancel = () => {
@@ -160,15 +171,14 @@ render() {
         <button className="btn btn-primary" title="Next page" onClick={() => this.changePage(1)}>➡</button>&emsp;
         Page <b>{this.state.pageVal}</b>&emsp;
         <button className="btn btn-primary" title="Home" onClick={() => this.changePage(0)}>▲</button>&emsp;
-        <button className="btn btn-secondary" title="Add customer">Add</button>
+        <button className="btn btn-secondary" title="Add customer" onClick={() => this.handleAdd()}>Add</button>
       <br></br><br></br>
 
       {this.state.modal ? (
           <Modal
             activeItem={this.state.activeItem}
-            toggle={this.toggle}
-            onExit={this.setState({modal: false})}
-            onSave={this.handleSubmit}
+            onExit={() => this.setState({modal: false})}
+            onSave={(item) => this.handleSubmit(item)}
           />
         ) : null}
     </main>

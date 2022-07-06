@@ -13,12 +13,13 @@ class CustomerView(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
     queryset = Customer.objects.all()
 
+@require_http_methods(["GET", "POST", "PUT", "DELETE"])
 @csrf_exempt
 def customer_list(request):
     """
         List all customers, or create a new customer.
     """
-    print("S+R=7")
+    print("Handicap " + str(request))
 
     if request.method == 'GET':
         customers = Customer.objects.all()
@@ -33,7 +34,7 @@ def customer_list(request):
             return JsonResponse(serializer.data, status = 201)
         return JsonResponse(serializer.errors, status = 400)
 
-@require_http_methods(["GET", "POST", "DELETE"])
+@require_http_methods(["GET", "POST", "PUT", "DELETE"])
 @csrf_exempt
 def customer_detail(request, pk):
     """
@@ -44,7 +45,6 @@ def customer_detail(request, pk):
         customer = Customer.objects.get(pk = pk)
     except Customer.DoesNotExist:
         return HttpResponse(status = 404)
-    print("Actual - " + str(request))
     
     if request.method == 'GET':
         serializer = CustomerSerializer(customer)
@@ -58,42 +58,15 @@ def customer_detail(request, pk):
             return JsonResponse(serializer.data)
         return JsonResponse(serializer.errors, status = 400)
 
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = CustomerSerializer(customer, data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status = 400)
+
     elif request.method == 'DELETE':
         print('Customer Delete')
         customer.delete()
         return HttpResponse(status = 204)
-
-@csrf_exempt
-def customer_del(request):
-    """
-        List all customers, or create a new customer.
-    """
-    print("S+R=7")
-
-    if request.method == 'GET':
-        customers = Customer.objects.all()
-        serializer = CustomerSerializer(customers, many = True)
-        return JsonResponse(serializer.data, safe = False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CustomerSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status = 201)
-        return JsonResponse(serializer.errors, status = 400)
-
-@csrf_exempt
-def customer_del(request, pk):
-    """
-        Delete a customer.
-    """
-
-    try:
-        customer = Customer.objects.get(pk = pk)
-    except Customer.DoesNotExist:
-        return HttpResponse(status = 404)
-
-    print('Customer Delete')
-    customer.delete()
-    return HttpResponse(status = 204)
