@@ -13,14 +13,13 @@ class CustomerView(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
     queryset = Customer.objects.all()
 
-@require_http_methods(["GET", "POST", "PUT", "DELETE"])
+@require_http_methods(["GET", "POST"])
 @csrf_exempt
 def customer_list(request):
     """
         List all customers, or create a new customer.
     """
-    print("Handicap " + str(request))
-
+    
     if request.method == 'GET':
         customers = Customer.objects.all()
         serializer = CustomerSerializer(customers, many = True)
@@ -34,7 +33,7 @@ def customer_list(request):
             return JsonResponse(serializer.data, status = 201)
         return JsonResponse(serializer.errors, status = 400)
 
-@require_http_methods(["GET", "POST", "PUT", "DELETE"])
+@require_http_methods(["GET", "PUT", "DELETE"])
 @csrf_exempt
 def customer_detail(request, pk):
     """
@@ -51,14 +50,6 @@ def customer_detail(request, pk):
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = CustomerSerializer(customer, data = data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status = 400)
-
-    elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = CustomerSerializer(customer, data = data)
         if serializer.is_valid():

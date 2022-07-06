@@ -53,17 +53,28 @@ componentDidMount() {
 }
 
 handleSubmit = (item) => {
-    if (this.state.customerList.some(e => e.id === item.id)) {
-      axios
-        .put("/api/customers/", item)
-        .then((res) => this.refreshList());
-    } else {
-      axios
-        .post("/api/customers/", item)
-        .then((res) => this.refreshList());
+    if (!!item.first_name && !!item.last_name
+        && item.tr_id !== null && !!item.city && item.district !== null) {
+          console.log(item.tr_id);
+        if (item.tr_id > 999999 || item.tr_id < 100000
+           || this.state.customerList.some(e => e.tr_id === item.tr_id && e.id != item.id)) {
+          alert("Turkish ID invalid!");
+          return;
+        }
+          
+        if (this.state.customerList.some(e => e.id === item.id)) {
+          axios
+            .put(`/api/customers/${item.id}/`, item)
+            .then((res) => this.refreshList());
+        } else {
+          axios
+            .post("/api/customers/", item)
+            .then((res) => this.refreshList());
+        }
+        
+        this.setState({modal: false});
     }
-    
-    this.setState({modal: false});
+    else alert("All fields are required.");
 };  
 
 handleDelete = (item) => {
@@ -135,7 +146,7 @@ renderItems = () => {
     newItems.sort((a, b) => b.id - a.id)
 
     // Pagination
-    const pagination = 25;
+    const pagination = 5;
     var sliced = newItems.slice(pagination * page, pagination * page + pagination);
     if (sliced.includes(newItems[newItems.length - 1])) this.state.lastPage = true;
     newItems = sliced;
