@@ -20,6 +20,7 @@ constructor(props) {
     modal: false,
     activeItem: 0,
     pageVal: 1,
+    pageTotalVal: 1,
     searchFilter: "",
     lastPage: false,
   };
@@ -57,7 +58,7 @@ handleSubmit = (item) => {
         && item.tr_id !== null && !!item.city && item.district !== null) {
           console.log(item.tr_id);
         if (item.tr_id > 999999 || item.tr_id < 100000
-           || this.state.customerList.some(e => e.tr_id === item.tr_id && e.id != item.id)) {
+           || this.state.customerList.some(e => e.tr_id == item.tr_id && e.id != item.id)) {
           alert("Turkish ID invalid!");
           return;
         }
@@ -147,6 +148,7 @@ renderItems = () => {
 
     // Pagination
     const pagination = 5;
+    this.state.pageTotalVal = Math.ceil(newItems.length / pagination);
     var sliced = newItems.slice(pagination * page, pagination * page + pagination);
     if (sliced.includes(newItems[newItems.length - 1])) this.state.lastPage = true;
     newItems = sliced;
@@ -178,11 +180,12 @@ render() {
       </ul>
 
       <br></br><br></br>
+        <button className="btn btn-success" title="Add customer" onClick={() => this.handleAdd()}>Add</button>
+      <br></br><br></br>
         <button className="btn btn-primary" title="Previous page" onClick={() => this.changePage(-1)}>⬅</button>&emsp;
         <button className="btn btn-primary" title="Next page" onClick={() => this.changePage(1)}>➡</button>&emsp;
-        Page <b>{this.state.pageVal}</b>&emsp;
+        Page <b>{this.state.pageVal}/{this.state.pageTotalVal}</b>&emsp;
         <button className="btn btn-primary" title="Home" onClick={() => this.changePage(0)}>▲</button>&emsp;
-        <button className="btn btn-secondary" title="Add customer" onClick={() => this.handleAdd()}>Add</button>
       <br></br><br></br>
 
       {this.state.modal ? (
